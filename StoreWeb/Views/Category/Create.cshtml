@@ -1,0 +1,58 @@
+﻿@model Store.Models.Category
+
+
+<div class="card shadow border-0 mt-4">
+
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="rows">
+    <div class="col-12 text-center">
+    <h2 class="text-white py-2">Create category</h2>
+   </div>
+    </div></div>
+
+    <div class="card-body">
+
+        <form method="post">
+
+            <div class="border p-3 ">
+               
+                <div asp-validation-summary="All"></div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="CatName" class="form-control border-0 shadow" />
+                    <label asp-for="CatName" class="ms-2" ></label>
+                  
+                    <span asp-validation-for="CatName" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating py-2 col-12">
+
+                    <input asp-for="DisplayOrder" class="form-control border-0 shadow" />
+                    <label asp-for="DisplayOrder" class="ms-2"></label>
+                    
+                    <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                </div>
+
+                <div class="row pt-2">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-primary form-control">Save</button>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <a asp-action="Index" asp-controller="Category" class="btn btn-outline-secondary form-control">Back to List</a>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts{
+
+    @{
+    <partial name="_ValidationScriptsPartial" />
+    }
+}

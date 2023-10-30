@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using StoreWeb.Models;
+using Store.Models;
 using System.Diagnostics;
 
 namespace StoreWeb.Controllers
