@@ -16,11 +16,12 @@ namespace Store.DataAccess.Data
 
         public DbSet<Category> catagories{ get; set; }
         public DbSet<Product> Products { get; set; }
-
+        public DbSet<Applicationuser> ApplicationUsers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //write this when you have identity
             base.OnModelCreating(modelBuilder);
+           
 
             modelBuilder.Entity<Category>().HasData(
                 new Category { CategoryID = 1, CatName = "Action", DisplayOrder = 1 },
