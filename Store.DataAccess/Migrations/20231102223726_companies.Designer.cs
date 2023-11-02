@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Store.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using Store.DataAccess.Data;
 namespace Store.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231102223726_companies")]
+    partial class companies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -294,38 +297,6 @@ namespace Store.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            City = "Munich",
-                            Name = "siemens",
-                            Phonenumber = "12333333",
-                            PostalCode = "90321",
-                            State = "Bavaria",
-                            StreetAdress = "Maria strasse 1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            City = "Erlangen",
-                            Name = "T&T",
-                            Phonenumber = "123438y333333",
-                            PostalCode = "90111",
-                            State = "Bavaria",
-                            StreetAdress = "Leipzig Strasse 12"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            City = "Nuremberg",
-                            Name = "AirBNB",
-                            Phonenumber = "123647333333",
-                            PostalCode = "90431",
-                            State = "Bavaria",
-                            StreetAdress = "Eberdshardhof"
-                        });
                 });
 
             modelBuilder.Entity("Store.Models.Product", b =>

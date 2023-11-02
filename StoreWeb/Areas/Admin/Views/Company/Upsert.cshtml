@@ -1,0 +1,115 @@
+﻿@model Store.Models.Company
+
+
+<div class="card shadow border-0 mt-4">
+
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="rows">
+    <div class="col-12 text-center">
+    <h2 class="text-white py-2">
+                   
+        @(Model.Id!=0?"Update":"Create") Company 
+    </h2>
+   </div>
+    </div></div>
+
+    <div class="card-body">
+
+        <form method="post" enctype="multipart/form-data">
+
+            <div class="row">
+                <div class="col-10">
+                    <div class="border p-3 ">
+                        <input type="hidden" asp-for="@Model.Id" />
+                  
+                        <div asp-validation-summary="All"></div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Name" class="form-control border-0 shadow" />
+                            <label asp-for="Name" class="ms-2"></label>
+
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+
+                            <input asp-for="State" class="form-control border-0 shadow" />
+                            <label asp-for="State" class="ms-2 text-muted"></label>
+                            <span asp-validation-for="State" class="text-danger"></span>
+                           
+
+
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+
+                            <input asp-for="City" class="form-control border-0 shadow" />
+                            <label asp-for="City" class="ms-2"></label>
+
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+
+                            <input asp-for="StreetAdress" class="form-control border-0 shadow" />
+                            <label asp-for="StreetAdress" class="ms-2"></label>
+
+                            <span asp-validation-for="StreetAdress" class="text-danger"></span>
+                        </div>
+
+
+
+                        
+
+                       
+
+                        <div class="form-floating py-2 col-12">
+
+                            <input asp-for="Phonenumber" class="form-control border-0 shadow" />
+                            <label asp-for="Phonenumber" class="ms-2"></label>
+
+                            <span asp-validation-for="Phonenumber" class="text-danger"></span>
+                        </div>
+
+
+
+                        <div class="row pt-2 mb-4">
+                            <div class="col-6 col-md-3">
+                                @if (Model.Id != 0)
+                                {
+                                    <button type="submit" class="btn btn-warning form-control">Update</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-primary form-control">Create</button>
+                                }
+
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <a asp-action="Index" asp-controller="Product" class="btn btn-outline-secondary form-control">Back to List</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-2">
+                  @*   <img src="@Model.Product.imageurl" width="100%" style="border-radius:5px;  border:1px solid;" /> *@
+                </div>
+            </div>
+
+           
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+
+    
+       
+   
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
