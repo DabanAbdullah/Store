@@ -5,10 +5,13 @@ using Store.DataAccess.Repository;
 using Microsoft.AspNetCore.Identity;
 using Store.Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Options;
+using Store.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+ConfigurationManager config = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -18,10 +21,57 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefualtConnectionString")));
 
 builder.Services.AddScoped<IEmailSender,EmailSender>();
-builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+//builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
+//add after identity
+builder.Services.ConfigureApplicationCookie(option => {
+    option.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+    option.LoginPath = $"/Identity/Account/Logout";
+    option.LoginPath = $"/Identity/Account/Login";
+});
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+builder.Services.AddAuthentication()
+   .AddGoogle(options =>
+   {
+       IConfigurationSection googleAuthNSection =
+       config.GetSection("Authentication:Google");
+       // options.ClientId = googleAuthNSection["ClientId"];
+       // options.ClientSecret = googleAuthNSection["ClientSecret"];
+       options.ClientId = "sdfsfdsfs";
+       options.ClientSecret = "sdfsfdsfs";
+   })
+   .AddFacebook(options =>
+   {
+       IConfigurationSection FBAuthNSection =
+       config.GetSection("Authentication:FB");
+       //  options.ClientId = FBAuthNSection["ClientId"];
+       //  options.ClientSecret = FBAuthNSection["ClientSecret"];
+       options.ClientId = "sdfsfdsfs";
+       options.ClientSecret = "sdfsfdsfs";
+   })
+   .AddMicrosoftAccount(microsoftOptions =>
+   {
+       //  microsoftOptions.ClientId = config["Authentication:Microsoft:ClientId"];
+       // microsoftOptions.ClientSecret = config["Authentication:Microsoft:ClientSecret"];
+
+       microsoftOptions.ClientId = "sdfsfdsfs";
+       microsoftOptions.ClientSecret = "sdfsfdsfs";
+   })
+   .AddTwitter(twitterOptions =>
+   {
+       //  twitterOptions.ConsumerKey = config["Authentication:Twitter:ConsumerAPIKey"];
+       // twitterOptions.ConsumerSecret = config["Authentication:Twitter:ConsumerSecret"];
+       twitterOptions.ConsumerKey = "sdfsfdsfs";
+       twitterOptions.ConsumerSecret = "sdfsfdsfs";
+      
+       twitterOptions.RetrieveUserDetails = true;
+   });
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -17,5 +17,7 @@ namespace Store.Models
         public string? city { get; set; }
         public string? state { get; set; }
         public string? postalcode { get; set; }
+
+       
     }
 }

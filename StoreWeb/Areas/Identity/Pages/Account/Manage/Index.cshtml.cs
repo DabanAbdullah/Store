@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Store.DataAccess.Data;
+using Store.Models;
 
 namespace StoreWeb.Areas.Identity.Pages.Account.Manage
 {
@@ -16,13 +18,16 @@ namespace StoreWeb.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ApplicationDbContext _applicationDbContext;
 
         public IndexModel(
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,
+            ApplicationDbContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _applicationDbContext = db;
         }
 
         /// <summary>
@@ -58,24 +63,47 @@ namespace StoreWeb.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            public string? state { get; set; }
+
+            public string? city { get; set; }
+
+
+            public string? StreetAdress { get; set; }
+            public string? postalcode { get; set; }
+
+            public string? Email { get; set; }
+
+
         }
 
         private async Task LoadAsync(IdentityUser user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            //var userName = await _userManager.GetUserNameAsync(user);
+            //var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            Applicationuser rec = (Applicationuser)await _applicationDbContext.Users.FindAsync(user.Id.ToString());
 
-            Username = userName;
+
+            Username = rec.fullname;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = rec.PhoneNumber,
+                Email = rec.Email,
+                StreetAdress = rec.StreetAdress,
+                state = rec.state,
+                city = rec.city,
+                postalcode = rec.postalcode,
+
+
             };
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
+            // 
+
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -87,32 +115,62 @@ namespace StoreWeb.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            try
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
+                var user = await _userManager.GetUserAsync(User);
+                Applicationuser rec = (Applicationuser)await _applicationDbContext.Users.FindAsync(user.Id);
 
-            if (!ModelState.IsValid)
-            {
-                await LoadAsync(user);
-                return Page();
-            }
-
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
+                if (rec == null)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
+                    return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
                 }
+
+                if (!ModelState.IsValid)
+                {
+                    await LoadAsync(user);
+                    return Page();
+                }
+
+
+                if (!string.IsNullOrEmpty(Input.PhoneNumber))
+                {
+                    rec.PhoneNumber = Input.PhoneNumber;
+
+                }
+
+                rec.StreetAdress = Input.StreetAdress;
+                rec.state = Input.state;
+                rec.Email = Input.Email;
+                rec.city = Input.city;
+                rec.postalcode = rec.postalcode;
+                var result = await _applicationDbContext.SaveChangesAsync();
+
+                await _signInManager.RefreshSignInAsync(user);
+                StatusMessage = "Your profile has been updated";
+                return RedirectToPage();
+
+
+
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = ex.Message;
+                return RedirectToPage();
             }
 
-            await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
-            return RedirectToPage();
+
+            //var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            //if (Input.PhoneNumber != phoneNumber)
+            //{
+            //    var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+            //    if (!setPhoneResult.Succeeded)
+            //    {
+            //        StatusMessage = "Unexpected error when trying to set phone number.";
+            //        return RedirectToPage();
+            //    }
+            //}
+
+
         }
     }
 }
