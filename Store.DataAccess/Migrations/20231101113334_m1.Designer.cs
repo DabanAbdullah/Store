@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Store.DataAccess.Data;
 
@@ -10,9 +11,11 @@ using Store.DataAccess.Data;
 namespace Store.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231101113334_m1")]
+    partial class m1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,10 +95,6 @@ namespace Store.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("imageurl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CatID");
@@ -113,8 +112,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 99.0,
                             Price = 90.0,
                             Price50 = 85.0,
-                            Title = "Fortune of Time",
-                            imageurl = ""
+                            Title = "Fortune of Time"
                         },
                         new
                         {
@@ -126,8 +124,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 40.0,
                             Price = 30.0,
                             Price50 = 25.0,
-                            Title = "Dark Skies",
-                            imageurl = ""
+                            Title = "Dark Skies"
                         },
                         new
                         {
@@ -139,8 +136,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 55.0,
                             Price = 50.0,
                             Price50 = 40.0,
-                            Title = "Vanish in the Sunset",
-                            imageurl = ""
+                            Title = "Vanish in the Sunset"
                         },
                         new
                         {
@@ -152,8 +148,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 70.0,
                             Price = 65.0,
                             Price50 = 60.0,
-                            Title = "Cotton Candy",
-                            imageurl = ""
+                            Title = "Cotton Candy"
                         },
                         new
                         {
@@ -165,8 +160,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 30.0,
                             Price = 27.0,
                             Price50 = 25.0,
-                            Title = "Rock in the Ocean",
-                            imageurl = ""
+                            Title = "Rock in the Ocean"
                         },
                         new
                         {
@@ -178,8 +172,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 25.0,
                             Price = 23.0,
                             Price50 = 22.0,
-                            Title = "Leaves and Wonders",
-                            imageurl = ""
+                            Title = "Leaves and Wonders"
                         });
                 });
 

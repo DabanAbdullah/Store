@@ -1,20 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Store.DataAccess.Data;
+using Store.DataAccess.Repository.IRepository;
 using Store.Models;
 
 
-namespace StoreWeb.Controllers
+namespace StoreWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _dbcontext;
-        public CategoryController(ApplicationDbContext db)
+        private readonly IUnitOfWork _unitofwork;
+        public CategoryController(IUnitOfWork db)
         {
-            _dbcontext = db;
+            _unitofwork = db;
         }
         public IActionResult Index()
         {
-            var list = _dbcontext.catagories.ToList();
+            var list = _unitofwork.Category.GetAll().ToList();
             return View(list);
         }
 
@@ -28,7 +30,8 @@ namespace StoreWeb.Controllers
         [HttpPost]
         public IActionResult Create(Category obj)
         {
-            if (obj.CatName == obj.DisplayOrder.ToString()) {
+            if (obj.CatName == obj.DisplayOrder.ToString())
+            {
                 ModelState.AddModelError("CatName", "name and display order can not match");
             }
 
@@ -37,9 +40,10 @@ namespace StoreWeb.Controllers
                 ModelState.AddModelError("", "this is invalid value");
             }
 
-            if (ModelState.IsValid) {
-                _dbcontext.catagories.Add(obj);
-                _dbcontext.SaveChanges();
+            if (ModelState.IsValid)
+            {
+                _unitofwork.Category.Add(obj);
+                _unitofwork.save();
                 TempData["success"] = "created successfuly";
                 return RedirectToAction("Index");
             }
@@ -51,14 +55,15 @@ namespace StoreWeb.Controllers
 
         public IActionResult Edit(int? id)
         {
-            if (id == null || id== 0) {
+            if (id == null || id == 0)
+            {
 
                 return NotFound();
             }
 
-            Category? detail = _dbcontext.catagories.Find(id);// only works on primary key
-            Category? detail2 = _dbcontext.catagories.FirstOrDefault(u=>u.CategoryID==id);//works on none primary key
-            Category? detail3 = _dbcontext.catagories.Where(u => u.CategoryID == id).FirstOrDefault();
+            Category? detail = _unitofwork.Category.Get(u => u.CategoryID == id);// only works on primary key
+            //Category? detail2 = _dbcontext.catagories.FirstOrDefault(u=>u.CategoryID==id);//works on none primary key
+            //Category? detail3 = _dbcontext.catagories.Where(u => u.CategoryID == id).FirstOrDefault();
 
             if (detail == null) { return NotFound(); }
             return View(detail);
@@ -67,12 +72,13 @@ namespace StoreWeb.Controllers
         [HttpPost]
         public IActionResult Edit(Category obj)
         {
-           
+
 
             if (ModelState.IsValid)
             {
-                _dbcontext.catagories.Update(obj);
-                _dbcontext.SaveChanges();
+                _unitofwork.Category.update(obj);
+                _unitofwork.save();
+
                 TempData["success"] = "updates successfuly";
                 return RedirectToAction("Index");
             }
@@ -92,15 +98,15 @@ namespace StoreWeb.Controllers
                 return NotFound();
             }
 
-            Category? detail = _dbcontext.catagories.Find(id);// only works on primary key
-         //   Category? detail2 = _dbcontext.catagories.FirstOrDefault(u => u.CategoryID == id);//works on none primary key
-          //  Category? detail3 = _dbcontext.catagories.Where(u => u.CategoryID == id).FirstOrDefault();
+            Category? detail = _unitofwork.Category.Get(u => u.CategoryID == id);// only works on primary key
+                                                                                 //   Category? detail2 = _dbcontext.catagories.FirstOrDefault(u => u.CategoryID == id);//works on none primary key
+                                                                                 //  Category? detail3 = _dbcontext.catagories.Where(u => u.CategoryID == id).FirstOrDefault();
 
             if (detail == null) { return NotFound(); }
             return View(detail);
         }
 
-        [HttpPost,ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]
         public IActionResult DeletePost(Category obj)
         {
 
@@ -108,8 +114,8 @@ namespace StoreWeb.Controllers
 
             if (ModelState.IsValid)
             {
-                _dbcontext.catagories.Remove(obj);
-                _dbcontext.SaveChanges();
+                _unitofwork.Category.Remove(obj);
+                _unitofwork.save();
                 TempData["success"] = "dleted successfuly";
                 return RedirectToAction("Index");
             }

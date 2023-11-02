@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Store.Models
 {
@@ -15,6 +16,8 @@ namespace Store.Models
         [DisplayName("Category Display Order")]
         [Range(1,100,ErrorMessage ="range must be between 1 and 100")]
         [Required]
+
+       
         public int DisplayOrder { get; set; }
     }
 }
