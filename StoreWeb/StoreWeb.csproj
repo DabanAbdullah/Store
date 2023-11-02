@@ -11,18 +11,22 @@
     <Compile Remove="Areas\Admin\Models\**" />
     <Compile Remove="Areas\Customer\Data\**" />
     <Compile Remove="Areas\Customer\Models\**" />
+    <Compile Remove="Areas\Identity\Data\**" />
     <Content Remove="Areas\Admin\Data\**" />
     <Content Remove="Areas\Admin\Models\**" />
     <Content Remove="Areas\Customer\Data\**" />
     <Content Remove="Areas\Customer\Models\**" />
+    <Content Remove="Areas\Identity\Data\**" />
     <EmbeddedResource Remove="Areas\Admin\Data\**" />
     <EmbeddedResource Remove="Areas\Admin\Models\**" />
     <EmbeddedResource Remove="Areas\Customer\Data\**" />
     <EmbeddedResource Remove="Areas\Customer\Models\**" />
+    <EmbeddedResource Remove="Areas\Identity\Data\**" />
     <None Remove="Areas\Admin\Data\**" />
     <None Remove="Areas\Admin\Models\**" />
     <None Remove="Areas\Customer\Data\**" />
     <None Remove="Areas\Customer\Models\**" />
+    <None Remove="Areas\Identity\Data\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,7 +49,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Identity\Data\" />
     <Folder Include="wwwroot\images\products\" />
   </ItemGroup>
 
