@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/StoreWeb.styles.css" asp-append-version="true" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
 </head>
 <body>
     <header>
@@ -22,13 +23,31 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                       
+
+
+
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="category" asp-action="Index">Categories</a>
+                            <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Content Management
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-are asp-controller="category" asp-action="Index">Categories</a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-are asp-controller="product" asp-action="Index">Products</a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
@@ -36,13 +55,13 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
-            <partial name="_notification" />
+        <main role="main" class="pb-3  mb-5">
+            <partial name="_notification"  />
             @RenderBody()
-        </main>
+        </main >
     </div>
 
-    <footer class="border-top  footer bg-primary text-white">
+    <footer class="border-top  footer bg-primary text-white" >
         <div class="container">
             &copy; 2023 - StoreWeb - made with <i class="bi bi-heart-fill"></i>
         </div>
@@ -50,7 +69,11 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-  
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.tiny.cloud/1/yf4xly2ggre72rde9dn75v7ugcwugu566xj92mb0fy0n8xp4/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

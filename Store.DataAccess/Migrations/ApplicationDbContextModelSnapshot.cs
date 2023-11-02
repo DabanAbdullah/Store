@@ -55,6 +55,144 @@ namespace Store.DataAccess.Migrations
                             DisplayOrder = 2
                         });
                 });
+
+            modelBuilder.Entity("Store.Models.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CatID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ISBN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("ListPrice")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Price50")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("imageurl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CatID");
+
+                    b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Author = "Billy Spark",
+                            CatID = 1,
+                            Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
+                            ISBN = "SWD9999001",
+                            ListPrice = 99.0,
+                            Price = 90.0,
+                            Price50 = 85.0,
+                            Title = "Fortune of Time",
+                            imageurl = ""
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Author = "Nancy Hoover",
+                            CatID = 1,
+                            Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
+                            ISBN = "CAW777777701",
+                            ListPrice = 40.0,
+                            Price = 30.0,
+                            Price50 = 25.0,
+                            Title = "Dark Skies",
+                            imageurl = ""
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Author = "Julian Button",
+                            CatID = 1,
+                            Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
+                            ISBN = "RITO5555501",
+                            ListPrice = 55.0,
+                            Price = 50.0,
+                            Price50 = 40.0,
+                            Title = "Vanish in the Sunset",
+                            imageurl = ""
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Author = "Abby Muscles",
+                            CatID = 2,
+                            Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
+                            ISBN = "WS3333333301",
+                            ListPrice = 70.0,
+                            Price = 65.0,
+                            Price50 = 60.0,
+                            Title = "Cotton Candy",
+                            imageurl = ""
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Author = "Ron Parker",
+                            CatID = 2,
+                            Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
+                            ISBN = "SOTJ1111111101",
+                            ListPrice = 30.0,
+                            Price = 27.0,
+                            Price50 = 25.0,
+                            Title = "Rock in the Ocean",
+                            imageurl = ""
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Author = "Laura Phantom",
+                            CatID = 2,
+                            Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
+                            ISBN = "FOT000000001",
+                            ListPrice = 25.0,
+                            Price = 23.0,
+                            Price50 = 22.0,
+                            Title = "Leaves and Wonders",
+                            imageurl = ""
+                        });
+                });
+
+            modelBuilder.Entity("Store.Models.Product", b =>
+                {
+                    b.HasOne("Store.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CatID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
 #pragma warning restore 612, 618
         }
     }
