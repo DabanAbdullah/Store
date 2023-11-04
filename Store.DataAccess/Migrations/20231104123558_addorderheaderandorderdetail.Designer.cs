@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Store.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using Store.DataAccess.Data;
 namespace Store.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231104123558_addorderheaderandorderdetail")]
+    partial class addorderheaderandorderdetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -406,9 +409,6 @@ namespace Store.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SessionId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("Shippingdate")
                         .HasColumnType("datetime2");
 
@@ -728,11 +728,11 @@ namespace Store.DataAccess.Migrations
 
             modelBuilder.Entity("Store.Models.Applicationuser", b =>
                 {
-                    b.HasOne("Store.Models.Company", "Company")
+                    b.HasOne("Store.Models.Company", "Category")
                         .WithMany()
                         .HasForeignKey("companyId");
 
-                    b.Navigation("Company");
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }

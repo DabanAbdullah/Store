@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Store.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using Store.DataAccess.Data;
 namespace Store.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231103013402_fixbugs")]
+    partial class fixbugs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -328,111 +331,6 @@ namespace Store.DataAccess.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Store.Models.OrderDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Orderheaderid")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Productid")
-                        .HasColumnType("int");
-
-                    b.Property<int>("count")
-                        .HasColumnType("int");
-
-                    b.Property<double>("price")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Orderheaderid");
-
-                    b.HasIndex("Productid");
-
-                    b.ToTable("OrderDetails");
-                });
-
-            modelBuilder.Entity("Store.Models.OrderHeader", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Carrier")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Orderdate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Orderstatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Paymentdate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateOnly>("Paymentduedate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("Paymentintendid")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Paymentstatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phonenumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Postalcode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SessionId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Shippingdate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StreetAdress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Total")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Trackingnumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("OrderHeaders");
-                });
-
             modelBuilder.Entity("Store.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -666,36 +564,6 @@ namespace Store.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Store.Models.OrderDetail", b =>
-                {
-                    b.HasOne("Store.Models.OrderHeader", "Orderheader")
-                        .WithMany()
-                        .HasForeignKey("Orderheaderid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Store.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("Productid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Orderheader");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("Store.Models.OrderHeader", b =>
-                {
-                    b.HasOne("Store.Models.Applicationuser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
             modelBuilder.Entity("Store.Models.Product", b =>
                 {
                     b.HasOne("Store.Models.Category", "Category")
@@ -728,11 +596,11 @@ namespace Store.DataAccess.Migrations
 
             modelBuilder.Entity("Store.Models.Applicationuser", b =>
                 {
-                    b.HasOne("Store.Models.Company", "Company")
+                    b.HasOne("Store.Models.Company", "Category")
                         .WithMany()
                         .HasForeignKey("companyId");
 
-                    b.Navigation("Company");
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }

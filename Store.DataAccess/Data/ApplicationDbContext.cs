@@ -18,7 +18,12 @@ namespace Store.DataAccess.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Applicationuser> ApplicationUsers { get; set; }
 
+        public DbSet<OrderHeader> OrderHeaders { get; set; }    
+        public DbSet<OrderDetail> OrderDetails { get; set; }    
+        
         public DbSet<Company> Companies { get; set; }
+
+        public DbSet<Shoppingcart> Shoopingcart { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //write this when you have identity

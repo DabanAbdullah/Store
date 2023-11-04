@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Store.DataAccess.Repository.IRepository;
 using Store.Models;
 using Store.Utility;
 
@@ -34,14 +35,14 @@ namespace StoreWeb.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-
+        private readonly IUnitOfWork _unitofwork;
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,IUnitOfWork unofwork)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -50,6 +51,7 @@ namespace StoreWeb.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager;
+            _unitofwork = unofwork;
         }
 
         /// <summary>
@@ -110,6 +112,10 @@ namespace StoreWeb.Areas.Identity.Pages.Account
             [ValidateNever]
             public IEnumerable<SelectListItem> Roles { get; set; }
 
+            public int CompanyId { get; set; }
+
+            [ValidateNever]
+            public IEnumerable<SelectListItem> Companies { get; set; }
 
             public string fullname { get; set; }
 
@@ -138,6 +144,11 @@ namespace StoreWeb.Areas.Identity.Pages.Account
                 {
                     Text = i,
                     Value = i
+                }),
+                Companies=_unitofwork.Company.GetAll().Select(i=> new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString(),
                 })
             };
             ReturnUrl = returnUrl;
@@ -157,7 +168,10 @@ namespace StoreWeb.Areas.Identity.Pages.Account
                 user.PhoneNumber= Input.phonenumber;
                 user.postalcode=    Input.postalcode;
                 user.fullname= Input.fullname;
-
+                if (Input.Role == SD.Role_user_Com)
+                {
+                    user.companyId = Input.CompanyId;
+                }
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -202,8 +216,22 @@ namespace StoreWeb.Areas.Identity.Pages.Account
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
+
             }
 
+            Input = new()
+            {
+                Roles = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                }),
+                Companies = _unitofwork.Company.GetAll().Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString(),
+                })
+            };
             // If we got this far, something failed, redisplay form
             return Page();
         }

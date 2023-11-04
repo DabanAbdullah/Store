@@ -7,11 +7,15 @@ using Store.Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using Store.Models;
+using Stripe;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 ConfigurationManager config = builder.Configuration;
+
+
+builder.Services.Configure<StripeSetting>(builder.Configuration.GetSection("Stripe"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -84,7 +88,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:secretkey").Get<string>();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

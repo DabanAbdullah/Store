@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Store.DataAccess.Repository;
 using Store.DataAccess.Repository.IRepository;
 using Store.Models;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace StoreWeb.Areas.Customer.Controllers
 {
@@ -23,14 +25,24 @@ namespace StoreWeb.Areas.Customer.Controllers
             return View(productlist);
         }
 
-        public IActionResult detail(int? id)
+        public IActionResult detail(int id)
         {
-            if (id != null)
-            {
-                Product productlist = _unitOfWork.Product.Get(x => x.Id == id, includeproperties: "Category");
-                if(productlist != null)
+            
+
+                Shoppingcart cart = new Shoppingcart()
                 {
-                    return View(productlist);
+                    product = _unitOfWork.Product.Get(x => x.Id == id, includeproperties: "Category"),
+                    count=1,
+                    productId = id,
+                    
+                    
+
+                };
+
+               
+                if(cart.product != null)
+                {
+                    return View(cart);
                 }
                 else
                 {
@@ -38,11 +50,33 @@ namespace StoreWeb.Areas.Customer.Controllers
 
                 }
                
+           
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult detail(Shoppingcart obj)
+        {
+            var claimsidentity=(ClaimsIdentity)User.Identity;
+            var userID = claimsidentity.FindFirst(ClaimTypes.NameIdentifier).Value ;
+            obj.ApplicationUserId = userID;
+
+            var rec=_unitOfWork.shoppingcart.Get(x=>x.ApplicationUserId== userID&&x.productId==obj.productId);
+            if(rec != null)
+            {
+                rec.count += obj.count;
+                _unitOfWork.shoppingcart.update(rec);
             }
             else
             {
-                return NotFound();
+                _unitOfWork.shoppingcart.Add(obj);
             }
+            
+            _unitOfWork.save();
+
+            TempData["success"] = "Shopping cart updated";
+
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()
