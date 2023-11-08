@@ -28,5 +28,8 @@ namespace Store.Utility
 		public const string Payment_status_Delayed_payment = "Aprroved_for_delayed_payment";
 		public const string Payment_status_Rejected= "Rejected";
 
+
+		public const string Sessioncart = "SessionShoppingcart";
+
 	}
 }

@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Store.DataAccess.Repository;
 using Store.DataAccess.Repository.IRepository;
 using Store.Models;
+using Store.Utility;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -21,6 +23,8 @@ namespace StoreWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
+          
+
             IEnumerable<Product> productlist = _unitOfWork.Product.GetAll(includeproperties: "Category").ToList();
             return View(productlist);
         }
@@ -66,13 +70,17 @@ namespace StoreWeb.Areas.Customer.Controllers
             {
                 rec.count += obj.count;
                 _unitOfWork.shoppingcart.update(rec);
+                _unitOfWork.save();
             }
             else
             {
                 _unitOfWork.shoppingcart.Add(obj);
+                _unitOfWork.save();
+                HttpContext.Session.SetInt32(SD.Sessioncart, _unitOfWork.shoppingcart.GetAll(x => x.ApplicationUserId == userID).Count());
+
             }
-            
-            _unitOfWork.save();
+
+
 
             TempData["success"] = "Shopping cart updated";
 

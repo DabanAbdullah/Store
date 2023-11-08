@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Store.Models;
+using Store.Utility;
 
 namespace StoreWeb.Areas.Identity.Pages.Account
 {
@@ -84,6 +86,15 @@ namespace StoreWeb.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+
+            public string fullname { get; set; }
+
+            public string? StreetAdress { get; set; }
+            public string? city { get; set; }
+            public string? state { get; set; }
+            public string? postalcode { get; set; }
+
+            public string? phonenumber { get; set; }
         }
         
         public IActionResult OnGet() => RedirectToPage("./Login");
@@ -127,11 +138,14 @@ namespace StoreWeb.Areas.Identity.Pages.Account
                 // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
                 ProviderDisplayName = info.ProviderDisplayName;
-                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Name))
                 {
                     Input = new InputModel
                     {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                        Email = info.Principal.FindFirstValue(ClaimTypes.Email),
+                        fullname= info.Principal.FindFirstValue(ClaimTypes.Name),
+
+
                     };
                 }
                 return Page();
@@ -156,12 +170,21 @@ namespace StoreWeb.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
+                user.fullname = Input.fullname;
+                user.state = Input.state;
+                user.PhoneNumber = Input.phonenumber;
+                user.postalcode = Input.postalcode;
+                user.StreetAdress = Input.StreetAdress;
+                user.city=Input.city;
+                
+
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
+                        await _userManager.AddToRoleAsync(user, SD.Role_user_cust);
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
                         var userId = await _userManager.GetUserIdAsync(user);
@@ -182,7 +205,7 @@ namespace StoreWeb.Areas.Identity.Pages.Account
                             return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
                         }
 
-                        await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+                       // await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
                         return LocalRedirect(returnUrl);
                     }
                 }
@@ -197,11 +220,11 @@ namespace StoreWeb.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private IdentityUser CreateUser()
+        private Applicationuser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<IdentityUser>();
+                return Activator.CreateInstance<Applicationuser>();
             }
             catch
             {

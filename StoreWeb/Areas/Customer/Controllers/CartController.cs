@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Store.DataAccess.Repository.IRepository;
 using Store.Models;
@@ -15,11 +16,13 @@ namespace StoreWeb.Areas.Customer.Controllers
     public class CartController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailSender _emailSender;
         [BindProperty]
         public ShoppingCartVM ShoppingCartVM { get; set; }
-        public CartController(IUnitOfWork unofwork)
+        public CartController(IUnitOfWork unofwork,IEmailSender em)
         {
             _unitOfWork = unofwork;
+            _emailSender = em;
         }
 
         public IActionResult Index()
@@ -68,10 +71,16 @@ namespace StoreWeb.Areas.Customer.Controllers
 
         public IActionResult remove(int cardId)
         {
-            var fromdb = _unitOfWork.shoppingcart.Get(x => x.Id == cardId);
+            var claimsidentity = (ClaimsIdentity)User.Identity;
+            var userID = claimsidentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var fromdb = _unitOfWork.shoppingcart.Get(x => x.Id == cardId, tracked:true); ;
 
             _unitOfWork.shoppingcart.Remove(fromdb);
             _unitOfWork.save();
+
+            HttpContext.Session.SetInt32(SD.Sessioncart, _unitOfWork.shoppingcart.GetAll(x => x.ApplicationUserId == userID).Count());
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -199,7 +208,7 @@ namespace StoreWeb.Areas.Customer.Controllers
                 }
 
                 var service = new SessionService();
-             Session session= service.Create(options);
+                Session session= service.Create(options);
                 _unitOfWork.OrderHeader.updatepaymentId(ShoppingCartVM.orderheader.Id, session.Id, session.PaymentIntentId);
                 _unitOfWork.save();
                 Response.Headers.Add("Location", session.Url);
@@ -213,7 +222,7 @@ namespace StoreWeb.Areas.Customer.Controllers
 
         public IActionResult OrderConfirmation(int id)
         {
-            var orderheader = _unitOfWork.OrderHeader.Get(x => x.Id == id);
+            var orderheader = _unitOfWork.OrderHeader.Get(x => x.Id == id,includeproperties: "AppUser");
             if (orderheader.Paymentstatus != SD.Payment_status_Delayed_payment)
             {
                 //order from cutomer
@@ -222,16 +231,23 @@ namespace StoreWeb.Areas.Customer.Controllers
                 Session session = service.Get(orderheader.SessionId);
                 if (session.PaymentStatus.ToLower() == "paid")
                 {
-                    _unitOfWork.OrderHeader.updatepaymentId(ShoppingCartVM.orderheader.Id, session.Id, session.PaymentIntentId);
+                    _unitOfWork.OrderHeader.updatepaymentId(id, session.Id, session.PaymentIntentId);
                     _unitOfWork.OrderHeader.updateStatus(id, SD.status_Approved, SD.Payment_status_Approved);
                     _unitOfWork.save();
 
                 }
             }
 
+            _emailSender.SendEmailAsync(orderheader.AppUser.Email, "you have made purchase", "hello dear customer thank you for your purchase order ID= " + orderheader.Id);
+
+
             List<Shoppingcart> cart=_unitOfWork.shoppingcart.GetAll(x=>x.ApplicationUserId==orderheader.ApplicationUserId).ToList();
             _unitOfWork.shoppingcart.RemoveRange(cart);
             _unitOfWork.save();
+            HttpContext.Session.SetInt32(SD.Sessioncart, _unitOfWork.shoppingcart.GetAll(x => x.ApplicationUserId == orderheader.ApplicationUserId).Count());
+
+
+
             return View(id);
         }
 

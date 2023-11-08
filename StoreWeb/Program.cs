@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using Store.Models;
 using Stripe;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Store.DataAccess.DBInitializer;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +28,13 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefualtConnectio
 
 builder.Services.AddScoped<IEmailSender,EmailSender>();
 //builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+builder.Services.AddIdentity<IdentityUser,IdentityRole>(options =>
+{
+    // Require the user's email to be confirmed before allowing login
+    options.SignIn.RequireConfirmedEmail = true;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2); // Lockout duration after the specified number of failed access attempts
+    options.Lockout.MaxFailedAccessAttempts = 5;
+}).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
 //add after identity
 builder.Services.ConfigureApplicationCookie(option => {
@@ -35,27 +43,42 @@ builder.Services.ConfigureApplicationCookie(option => {
     option.LoginPath = $"/Identity/Account/Login";
 });
 
+
+
+//addsessions 
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(option => {
+    option.IdleTimeout = TimeSpan.FromMinutes(100);
+    option.Cookie.HttpOnly = true;
+    option.Cookie.IsEssential = true;
+});
+
+
+builder.Services.AddScoped<IDBInitializer, DBInitializer>();
+
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 builder.Services.AddAuthentication()
    .AddGoogle(options =>
    {
-       IConfigurationSection googleAuthNSection =
-       config.GetSection("Authentication:Google");
+       
        // options.ClientId = googleAuthNSection["ClientId"];
        // options.ClientSecret = googleAuthNSection["ClientSecret"];
-       options.ClientId = "sdfsfdsfs";
-       options.ClientSecret = "sdfsfdsfs";
+       options.ClientId = "55410723470-sirb8m3kt04pslb61db031m364476cg4.apps.googleusercontent.com";
+       options.ClientSecret = "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";
    })
    .AddFacebook(options =>
    {
-       IConfigurationSection FBAuthNSection =
-       config.GetSection("Authentication:FB");
-       //  options.ClientId = FBAuthNSection["ClientId"];
-       //  options.ClientSecret = FBAuthNSection["ClientSecret"];
-       options.ClientId = "sdfsfdsfs";
-       options.ClientSecret = "sdfsfdsfs";
+      
+        options.ClientId = "868372381649422";
+        options.ClientSecret = "dcaa4750c2e1e90b96cd9cb637cae02b";
+       options.AccessDeniedPath = "/AccessDeniedPathInfo";
+       
+       
+
    })
    .AddMicrosoftAccount(microsoftOptions =>
    {
@@ -86,15 +109,29 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:secretkey").Get<string>();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
+SeedDatabase();
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
+void SeedDatabase()
+{
+    using(var scope = app.Services.CreateScope())
+    {
+        var dbinit = scope.ServiceProvider.GetRequiredService<IDBInitializer>();
+        dbinit.Initialize();
+    }
+}

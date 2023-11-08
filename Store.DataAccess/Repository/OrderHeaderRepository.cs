@@ -37,7 +37,7 @@ namespace Store.DataAccess.Repository
                
             }
 
-            if (string.IsNullOrEmpty(paymentId))
+            if (!string.IsNullOrEmpty(paymentId))
             {
                 fromDB.Paymentintendid = paymentId;
                 fromDB.Paymentdate = DateTime.Now;
