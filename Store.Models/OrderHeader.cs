@@ -34,7 +34,7 @@ namespace Store.Models
 
 
         public DateTime Paymentdate { get; set; }
-        public DateOnly Paymentduedate { get; set; }
+        public DateTime Paymentduedate { get; set; }
 
 
         public string? SessionId { get; set; }

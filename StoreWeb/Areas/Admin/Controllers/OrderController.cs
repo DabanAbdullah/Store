@@ -225,7 +225,7 @@ namespace StoreWeb.Areas.Admin.Controllers
             order.Carrier = OrderVM.OrderHeader.Carrier;
             if (order.Paymentstatus == SD.Payment_status_Delayed_payment)
             {
-                order.Paymentduedate =DateOnly.FromDateTime( DateTime.Now.AddDays(30));
+                order.Paymentduedate = DateTime.Now.AddDays(30);
             }
             _unitofwork.OrderHeader.update(order);
             _unitofwork.save();

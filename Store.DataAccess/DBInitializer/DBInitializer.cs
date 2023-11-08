@@ -65,12 +65,14 @@ namespace Store.DataAccess.DBInitializer
                     city = "Nuremberg",
                     postalcode = "90431",
                     PhoneNumber = "00491786636042",
+                    StreetAdress = "tel avev 123",
                     EmailConfirmed = true
 
-                }, "admin123*").GetAwaiter().GetResult();
+                }, "gnt573@CS").GetAwaiter().GetResult();
 
-                Applicationuser appuser = DbContext.ApplicationUsers.FirstOrDefault(x => x.Email == "admin@gmail.com");
+                Applicationuser appuser = DbContext.ApplicationUsers.FirstOrDefault(x => x.UserName == "admin@gmail.com");
                 userManager.AddToRoleAsync(appuser, SD.Role_user_Admin).GetAwaiter().GetResult();
+
             }
 
             return;
