@@ -31,7 +31,7 @@ builder.Services.AddScoped<IEmailSender,EmailSender>();
 builder.Services.AddIdentity<IdentityUser,IdentityRole>(options =>
 {
     // Require the user's email to be confirmed before allowing login
-    options.SignIn.RequireConfirmedEmail = true;
+  //  options.SignIn.RequireConfirmedEmail = true;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2); // Lockout duration after the specified number of failed access attempts
     options.Lockout.MaxFailedAccessAttempts = 5;
 }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
