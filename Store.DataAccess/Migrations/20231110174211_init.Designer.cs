@@ -12,15 +12,15 @@ using Store.DataAccess.Data;
 namespace Store.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231104140941_fixcompanyissue")]
-    partial class fixcompanyissue
+    [Migration("20231110174211_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0-rc.2.23480.1")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -91,8 +91,7 @@ namespace Store.DataAccess.Migrations
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -392,8 +391,8 @@ namespace Store.DataAccess.Migrations
                     b.Property<DateTime>("Paymentdate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("Paymentduedate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("Paymentduedate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Paymentintendid")
                         .HasColumnType("nvarchar(max)");
@@ -407,6 +406,9 @@ namespace Store.DataAccess.Migrations
 
                     b.Property<string>("Postalcode")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SessionId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Shippingdate")
@@ -469,10 +471,6 @@ namespace Store.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("imageurl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CatID");
@@ -490,8 +488,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 99.0,
                             Price = 90.0,
                             Price50 = 85.0,
-                            Title = "Fortune of Time",
-                            imageurl = ""
+                            Title = "Fortune of Time"
                         },
                         new
                         {
@@ -503,8 +500,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 40.0,
                             Price = 30.0,
                             Price50 = 25.0,
-                            Title = "Dark Skies",
-                            imageurl = ""
+                            Title = "Dark Skies"
                         },
                         new
                         {
@@ -516,8 +512,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 55.0,
                             Price = 50.0,
                             Price50 = 40.0,
-                            Title = "Vanish in the Sunset",
-                            imageurl = ""
+                            Title = "Vanish in the Sunset"
                         },
                         new
                         {
@@ -529,8 +524,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 70.0,
                             Price = 65.0,
                             Price50 = 60.0,
-                            Title = "Cotton Candy",
-                            imageurl = ""
+                            Title = "Cotton Candy"
                         },
                         new
                         {
@@ -542,8 +536,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 30.0,
                             Price = 27.0,
                             Price50 = 25.0,
-                            Title = "Rock in the Ocean",
-                            imageurl = ""
+                            Title = "Rock in the Ocean"
                         },
                         new
                         {
@@ -555,8 +548,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 25.0,
                             Price = 23.0,
                             Price50 = 22.0,
-                            Title = "Leaves and Wonders",
-                            imageurl = ""
+                            Title = "Leaves and Wonders"
                         });
                 });
 

@@ -25,7 +25,7 @@ namespace StoreWeb.Areas.Customer.Controllers
         {
           
 
-            IEnumerable<Product> productlist = _unitOfWork.Product.GetAll(includeproperties: "Category").ToList();
+            IEnumerable<Product> productlist = _unitOfWork.Product.GetAll(includeproperties: "Category,ProductImages").ToList();
             return View(productlist);
         }
 
@@ -35,7 +35,7 @@ namespace StoreWeb.Areas.Customer.Controllers
 
                 Shoppingcart cart = new Shoppingcart()
                 {
-                    product = _unitOfWork.Product.Get(x => x.Id == id, includeproperties: "Category"),
+                    product = _unitOfWork.Product.Get(x => x.Id == id, includeproperties: "Category,ProductImages"),
                     count=1,
                     productId = id,
                     

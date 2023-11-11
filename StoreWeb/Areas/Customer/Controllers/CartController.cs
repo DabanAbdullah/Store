@@ -37,8 +37,12 @@ namespace StoreWeb.Areas.Customer.Controllers
 
             };
 
+
+            IEnumerable<productimage> listimages = _unitOfWork.ProductImage.GetAll();
+
             foreach (Shoppingcart sp in ShoppingCartVM.shoppingcartlist)
             {
+                sp.product.ProductImages = listimages.Where(x => x.ProductId == sp.product.Id).ToList();
                 double price = getpricebyquantity(sp);
                 sp.price = price;
                 ShoppingCartVM.orderheader.Total = ShoppingCartVM.orderheader.Total + (price * sp.count);

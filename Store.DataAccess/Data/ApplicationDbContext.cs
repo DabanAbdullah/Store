@@ -24,6 +24,9 @@ namespace Store.DataAccess.Data
         public DbSet<Company> Companies { get; set; }
 
         public DbSet<Shoppingcart> Shoopingcart { get; set; }
+
+
+        public DbSet<productimage> ProductImage { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //write this when you have identity
@@ -82,7 +85,7 @@ namespace Store.DataAccess.Data
                      Price = 90,
                      Price50 = 85,
                      CatID = 1,
-                     imageurl = "",
+                    // imageurl = "",
 
                  },
                  new Product
@@ -96,7 +99,7 @@ namespace Store.DataAccess.Data
                      Price = 30,
                      Price50 = 25,
                      CatID = 1,
-                     imageurl = "",
+                  //   imageurl = "",
 
                  },
                  new Product
@@ -110,7 +113,7 @@ namespace Store.DataAccess.Data
                      Price = 50,
                      Price50 = 40,
                      CatID = 1,
-                     imageurl = "",
+                   //  imageurl = "",
 
                  },
                  new Product
@@ -124,7 +127,7 @@ namespace Store.DataAccess.Data
                      Price = 65,
                      Price50 = 60,
                      CatID = 2,
-                     imageurl = "",
+                   //  imageurl = "",
                  },
                  new Product
                  {
@@ -137,7 +140,7 @@ namespace Store.DataAccess.Data
                      Price = 27,
                      Price50 = 25,
                      CatID = 2,
-                     imageurl = "",
+                   //  imageurl = "",
 
                  },
                  new Product
@@ -151,7 +154,7 @@ namespace Store.DataAccess.Data
                      Price = 23,
                      Price50 = 22,
                      CatID = 2,
-                     imageurl = "",
+                  //   imageurl = "",
 
                  });
 

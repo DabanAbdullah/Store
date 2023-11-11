@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.Facebook;
 using Store.DataAccess.DBInitializer;
 
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 ConfigurationManager config = builder.Configuration;
@@ -61,20 +62,18 @@ builder.Services.AddScoped<IDBInitializer, DBInitializer>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
+
 builder.Services.AddAuthentication()
    .AddGoogle(options =>
    {
-       
-       // options.ClientId = googleAuthNSection["ClientId"];
-       // options.ClientSecret = googleAuthNSection["ClientSecret"];
-       options.ClientId = "55410723470-sirb8m3kt04pslb61db031m364476cg4.apps.googleusercontent.com";
-       options.ClientSecret = "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";
+
+       options.ClientId = config.GetSection("Google")["ClientId"];
+       options.ClientSecret = config.GetSection("Google")["ClientSecret"];
    })
    .AddFacebook(options =>
    {
-      
-        options.ClientId = "868372381649422";
-        options.ClientSecret = "dcaa4750c2e1e90b96cd9cb637cae02b";
+       options.ClientId = config.GetSection("FB")["ClientId"];
+       options.ClientSecret = config.GetSection("FB")["ClientSecret"];
        options.AccessDeniedPath = "/AccessDeniedPathInfo";
        
        

@@ -42,7 +42,8 @@ namespace Store.Models
         public Category Category { get; set; }
 
         [ValidateNever]
-        public string imageurl { get; set; }
+         public  List<productimage> ProductImages { get; set; }
+
 
 
     }

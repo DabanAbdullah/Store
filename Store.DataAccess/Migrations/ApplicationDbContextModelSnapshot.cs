@@ -17,7 +17,7 @@ namespace Store.DataAccess.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0-rc.2.23480.1")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -88,8 +88,7 @@ namespace Store.DataAccess.Migrations
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -389,8 +388,8 @@ namespace Store.DataAccess.Migrations
                     b.Property<DateTime>("Paymentdate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("Paymentduedate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("Paymentduedate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Paymentintendid")
                         .HasColumnType("nvarchar(max)");
@@ -469,10 +468,6 @@ namespace Store.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("imageurl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CatID");
@@ -490,8 +485,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 99.0,
                             Price = 90.0,
                             Price50 = 85.0,
-                            Title = "Fortune of Time",
-                            imageurl = ""
+                            Title = "Fortune of Time"
                         },
                         new
                         {
@@ -503,8 +497,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 40.0,
                             Price = 30.0,
                             Price50 = 25.0,
-                            Title = "Dark Skies",
-                            imageurl = ""
+                            Title = "Dark Skies"
                         },
                         new
                         {
@@ -516,8 +509,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 55.0,
                             Price = 50.0,
                             Price50 = 40.0,
-                            Title = "Vanish in the Sunset",
-                            imageurl = ""
+                            Title = "Vanish in the Sunset"
                         },
                         new
                         {
@@ -529,8 +521,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 70.0,
                             Price = 65.0,
                             Price50 = 60.0,
-                            Title = "Cotton Candy",
-                            imageurl = ""
+                            Title = "Cotton Candy"
                         },
                         new
                         {
@@ -542,8 +533,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 30.0,
                             Price = 27.0,
                             Price50 = 25.0,
-                            Title = "Rock in the Ocean",
-                            imageurl = ""
+                            Title = "Rock in the Ocean"
                         },
                         new
                         {
@@ -555,8 +545,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 25.0,
                             Price = 23.0,
                             Price50 = 22.0,
-                            Title = "Leaves and Wonders",
-                            imageurl = ""
+                            Title = "Leaves and Wonders"
                         });
                 });
 
@@ -585,6 +574,28 @@ namespace Store.DataAccess.Migrations
                     b.HasIndex("productId");
 
                     b.ToTable("Shoopingcart");
+                });
+
+            modelBuilder.Entity("Store.Models.productimage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImage");
                 });
 
             modelBuilder.Entity("Store.Models.Applicationuser", b =>
@@ -726,6 +737,17 @@ namespace Store.DataAccess.Migrations
                     b.Navigation("product");
                 });
 
+            modelBuilder.Entity("Store.Models.productimage", b =>
+                {
+                    b.HasOne("Store.Models.Product", "Product")
+                        .WithMany("ProductImages")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Store.Models.Applicationuser", b =>
                 {
                     b.HasOne("Store.Models.Company", "Company")
@@ -733,6 +755,11 @@ namespace Store.DataAccess.Migrations
                         .HasForeignKey("companyId");
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Store.Models.Product", b =>
+                {
+                    b.Navigation("ProductImages");
                 });
 #pragma warning restore 612, 618
         }

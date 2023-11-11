@@ -1,4 +1,4 @@
-﻿@model Store.Models.VM.ProductViewModel
+﻿@model ProductViewModel
 
 
 <div class="card shadow border-0 mt-4">
@@ -21,7 +21,7 @@
                 <div class="col-10">
                     <div class="border p-3 ">
                         <input type="hidden" asp-for="@Model.Product.Id" />
-                        <input type="hidden" asp-for="@Model.Product.imageurl" />
+                      
                         <div asp-validation-summary="All"></div>
                         <div class="form-floating py-2 col-12">
                             <input asp-for="Product.Title" class="form-control border-0 shadow" />
@@ -59,9 +59,9 @@
 
                         <div class="form-floating py-2 col-12">
 
-                            <input type="file" name="file" class="form-control border-0 shadow" />
-                            <label asp-for="Product.imageurl" class="ms-2"></label>
-
+                            <input type="file" name="files" multiple class="form-control border-0 shadow" />
+                            <label asp-for="Product.ProductImages" class="ms-2"></label>
+                           
 
                         </div>
 
@@ -124,8 +124,17 @@
                     </div>
                 </div>
                 <div class="col-2">
-                    <img src="@Model.Product.imageurl" width="100%" style="border-radius:5px;  border:1px solid;" />
-                </div>
+
+
+                    @foreach(var item in Model.Product.ProductImages)
+                    {
+                        <div class="border p-1 m-2 text-center">
+                            <img src="@item.ImageUrl" width="100%" style="border-radius:5px;  border:1px solid;" />
+                        <a asp-action="DeleteImage" asp-route-ImageID="@item.Id" class="btn btn-danger form-control">Delete</a>
+                        </div>
+                    }
+
+                   </div>
             </div>
 
            

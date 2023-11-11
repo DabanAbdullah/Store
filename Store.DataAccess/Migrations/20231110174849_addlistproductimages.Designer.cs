@@ -12,15 +12,15 @@ using Store.DataAccess.Data;
 namespace Store.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231102223726_companies")]
-    partial class companies
+    [Migration("20231110174849_addlistproductimages")]
+    partial class addlistproductimages
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0-rc.2.23480.1")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -91,8 +91,7 @@ namespace Store.DataAccess.Migrations
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -297,6 +296,143 @@ namespace Store.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            City = "Munich",
+                            Name = "siemens",
+                            Phonenumber = "12333333",
+                            PostalCode = "90321",
+                            State = "Bavaria",
+                            StreetAdress = "Maria strasse 1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            City = "Erlangen",
+                            Name = "T&T",
+                            Phonenumber = "123438y333333",
+                            PostalCode = "90111",
+                            State = "Bavaria",
+                            StreetAdress = "Leipzig Strasse 12"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            City = "Nuremberg",
+                            Name = "AirBNB",
+                            Phonenumber = "123647333333",
+                            PostalCode = "90431",
+                            State = "Bavaria",
+                            StreetAdress = "Eberdshardhof"
+                        });
+                });
+
+            modelBuilder.Entity("Store.Models.OrderDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Orderheaderid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Productid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("count")
+                        .HasColumnType("int");
+
+                    b.Property<double>("price")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Orderheaderid");
+
+                    b.HasIndex("Productid");
+
+                    b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("Store.Models.OrderHeader", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Carrier")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Orderdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Orderstatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Paymentdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Paymentduedate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Paymentintendid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Paymentstatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phonenumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Postalcode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SessionId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Shippingdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StreetAdress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Total")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Trackingnumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("OrderHeaders");
                 });
 
             modelBuilder.Entity("Store.Models.Product", b =>
@@ -335,10 +471,6 @@ namespace Store.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("imageurl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CatID");
@@ -356,8 +488,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 99.0,
                             Price = 90.0,
                             Price50 = 85.0,
-                            Title = "Fortune of Time",
-                            imageurl = ""
+                            Title = "Fortune of Time"
                         },
                         new
                         {
@@ -369,8 +500,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 40.0,
                             Price = 30.0,
                             Price50 = 25.0,
-                            Title = "Dark Skies",
-                            imageurl = ""
+                            Title = "Dark Skies"
                         },
                         new
                         {
@@ -382,8 +512,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 55.0,
                             Price = 50.0,
                             Price50 = 40.0,
-                            Title = "Vanish in the Sunset",
-                            imageurl = ""
+                            Title = "Vanish in the Sunset"
                         },
                         new
                         {
@@ -395,8 +524,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 70.0,
                             Price = 65.0,
                             Price50 = 60.0,
-                            Title = "Cotton Candy",
-                            imageurl = ""
+                            Title = "Cotton Candy"
                         },
                         new
                         {
@@ -408,8 +536,7 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 30.0,
                             Price = 27.0,
                             Price50 = 25.0,
-                            Title = "Rock in the Ocean",
-                            imageurl = ""
+                            Title = "Rock in the Ocean"
                         },
                         new
                         {
@@ -421,9 +548,57 @@ namespace Store.DataAccess.Migrations
                             ListPrice = 25.0,
                             Price = 23.0,
                             Price50 = 22.0,
-                            Title = "Leaves and Wonders",
-                            imageurl = ""
+                            Title = "Leaves and Wonders"
                         });
+                });
+
+            modelBuilder.Entity("Store.Models.Shoppingcart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("productId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("productId");
+
+                    b.ToTable("Shoopingcart");
+                });
+
+            modelBuilder.Entity("Store.Models.productimage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImage");
                 });
 
             modelBuilder.Entity("Store.Models.Applicationuser", b =>
@@ -436,6 +611,9 @@ namespace Store.DataAccess.Migrations
                     b.Property<string>("city")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("companyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("fullname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -445,6 +623,8 @@ namespace Store.DataAccess.Migrations
 
                     b.Property<string>("state")
                         .HasColumnType("nvarchar(max)");
+
+                    b.HasIndex("companyId");
 
                     b.HasDiscriminator().HasValue("Applicationuser");
                 });
@@ -500,6 +680,36 @@ namespace Store.DataAccess.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Store.Models.OrderDetail", b =>
+                {
+                    b.HasOne("Store.Models.OrderHeader", "Orderheader")
+                        .WithMany()
+                        .HasForeignKey("Orderheaderid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Store.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("Productid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Orderheader");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Store.Models.OrderHeader", b =>
+                {
+                    b.HasOne("Store.Models.Applicationuser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("Store.Models.Product", b =>
                 {
                     b.HasOne("Store.Models.Category", "Category")
@@ -509,6 +719,45 @@ namespace Store.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Store.Models.Shoppingcart", b =>
+                {
+                    b.HasOne("Store.Models.Applicationuser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Store.Models.Product", "product")
+                        .WithMany()
+                        .HasForeignKey("productId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("product");
+                });
+
+            modelBuilder.Entity("Store.Models.productimage", b =>
+                {
+                    b.HasOne("Store.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Store.Models.Applicationuser", b =>
+                {
+                    b.HasOne("Store.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("companyId");
+
+                    b.Navigation("Company");
                 });
 #pragma warning restore 612, 618
         }

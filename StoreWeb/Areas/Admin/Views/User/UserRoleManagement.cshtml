@@ -1,0 +1,98 @@
+﻿@model UserRoleManageVM
+
+
+<div class="card shadow border-0 mt-4">
+
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="rows">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Manage User Role</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.appuser.Id" />
+            <div class="border p-3">
+
+                <div asp-validation-summary="All"></div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="appuser.fullname" readonly class="form-control border-0 shadow" />
+                    <label asp-for="appuser.fullname" class="ms-2"></label>
+
+                 </div>
+
+                <div class="form-floating py-2 col-12">
+
+                    <select asp-for="appuser.rolename" asp-items="@Model.rolelist" class="form-select" ></select>
+                  
+                </div>
+
+                @{
+                    var com = "display:none;";
+                }
+                @if (Model.appuser.rolename == SD.Role_user_Com)
+                {
+                     com = "display:block;";
+                }
+
+                <div class="form-floating py-2 col-12">
+
+                    <select asp-for="@Model.appuser.companyId" style="@com" asp-items=@Model.companlist class="form-select" ></select>
+                   
+
+                </div> 
+
+               
+
+
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="@Model.appuser.rolename" readonly class="form-control border-0 shadow" />
+                    <label asp-for="@Model.appuser.rolename" class="ms-2"></label>
+
+                    <span asp-validation-for="@Model.appuser.rolename" class="text-danger">
+
+                    </span>
+                </div> 
+
+                <div class="row pt-2 ">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-primary form-control">Update Role</button>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <a asp-action="Index" asp-controller="user" class="btn btn-outline-secondary form-control">Back to List</a>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+
+            $('#appuser_rolename').change(function () {
+                var text = $('#appuser_rolename Option:Selected').text();
+                if (text == 'Company') {
+                    $('#appuser_companyId').show();
+                }
+                else {
+                    $('#appuser_companyId').hide();
+                }
+            })
+        });
+    </script>
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

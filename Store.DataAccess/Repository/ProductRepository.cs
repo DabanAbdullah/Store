@@ -35,10 +35,11 @@ namespace Store.DataAccess.Repository
                 rec.ListPrice = obj.ListPrice;
                 rec.Author = obj.Author;
                 rec.CatID = obj.CatID;  
-                if (obj.imageurl != null)
-                {
-                    rec.imageurl = obj.imageurl;
-                }
+                rec.ProductImages=obj.ProductImages;
+                //if (obj.imageurl != null)
+                //{
+                //    rec.imageurl = obj.imageurl;
+                //}
             }
             
         }

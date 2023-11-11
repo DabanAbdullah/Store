@@ -5,7 +5,7 @@
 namespace Store.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class fixcompanyissue : Migration
+    public partial class addlistproductimages2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
