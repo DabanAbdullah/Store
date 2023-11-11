@@ -81,11 +81,10 @@ builder.Services.AddAuthentication()
    })
    .AddMicrosoftAccount(microsoftOptions =>
    {
-       //  microsoftOptions.ClientId = config["Authentication:Microsoft:ClientId"];
-       // microsoftOptions.ClientSecret = config["Authentication:Microsoft:ClientSecret"];
+        microsoftOptions.ClientId = "15e40e4e-cfd8-438f-aa50-c8ec6837a1ed";
+        microsoftOptions.ClientSecret = "144f1d59-2011-47e8-93c2-e50d6ee60a47";
 
-       microsoftOptions.ClientId = "sdfsfdsfs";
-       microsoftOptions.ClientSecret = "sdfsfdsfs";
+     
    })
    .AddTwitter(twitterOptions =>
    {

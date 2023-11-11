@@ -19,13 +19,15 @@ namespace StoreWeb.Areas.Admin.Controllers
     [Authorize(Roles = SD.Role_user_Admin)]
     public class UserController : Controller
     {
-        private readonly ApplicationDbContext db;
+        private readonly IUnitOfWork db;
 
         private readonly UserManager<IdentityUser> usermanager;
-        public UserController(ApplicationDbContext _db, UserManager<IdentityUser> _usermanager)
+        private readonly RoleManager<IdentityRole> rolemanager;
+        public UserController(IUnitOfWork _db, UserManager<IdentityUser> _usermanager, RoleManager<IdentityRole> _rolemanager)
         {
             db = _db;
-            usermanager= _usermanager;
+            usermanager = _usermanager;
+            rolemanager = _rolemanager;
         }
         public IActionResult Index()
         {
@@ -36,18 +38,14 @@ namespace StoreWeb.Areas.Admin.Controllers
 
         public IActionResult UserRoleManagement(string Id)
         {
-         Applicationuser  appuser1 = db.ApplicationUsers.Include(x => x.Company).Where(x=>x.Id==Id).FirstOrDefault();
+            Applicationuser appuser1 = db.Applcationuser.Get(x => x.Id == Id,includeproperties: "Company");
 
 
             if(appuser1 != null)
             {
 
-                var roles = db.Roles.ToList();
-                var userrole = db.UserRoles.ToList();
-
-                var roleid = userrole.FirstOrDefault(x => x.UserId == appuser1.Id).RoleId;
-                appuser1.rolename = roles.FirstOrDefault(x => x.Id == roleid).Name;
-
+                var roles = rolemanager.Roles.ToList();
+              
                 UserRoleManageVM vm = new UserRoleManageVM()
                 {
                     appuser = appuser1,
@@ -57,13 +55,16 @@ namespace StoreWeb.Areas.Admin.Controllers
                         Value = i.Name
                     }),
 
-                     companlist = db.Companies.ToList().Select(i => new SelectListItem
+                     companlist = db.Company.GetAll().Select(i => new SelectListItem
                      {
                          Text = i.Name,
                          Value = i.Id.ToString()
                      })
 
                 };
+
+                vm.appuser.rolename = usermanager.GetRolesAsync(db.Applcationuser.Get(x => x.Id == Id))
+                    .GetAwaiter().GetResult().FirstOrDefault();
 
                 return View(vm);
 
@@ -78,26 +79,39 @@ namespace StoreWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult UserRoleManagement(UserRoleManageVM model)
         {
-            var RoleId = db.UserRoles.FirstOrDefault(x => x.UserId == model.appuser.Id).RoleId;
-            var oldname = db.Roles.FirstOrDefault(x => x.Id == RoleId).Name;
-            if(!(model.appuser.rolename==oldname))
+            
+            var oldrole= usermanager.GetRolesAsync(db.Applcationuser.Get(x => x.Id == model.appuser.Id))
+                    .GetAwaiter().GetResult().FirstOrDefault();
+
+            Applicationuser appuser = db.Applcationuser.Get(x => x.Id == model.appuser.Id);
+            if (!(model.appuser.rolename== oldrole))
             {
-                Applicationuser appuser = db.ApplicationUsers.FirstOrDefault(x => x.Id == model.appuser.Id);
+               
                 if (model.appuser.rolename == SD.Role_user_Com)
                 {
                     appuser.companyId = model.appuser.companyId;
                 }
-                if(oldname==SD.Role_user_Com)
+                if(oldrole==SD.Role_user_Com)
                 {
                     appuser.companyId = null;
                 }
 
-
-                db.SaveChanges();
-                usermanager.RemoveFromRoleAsync(appuser, oldname).GetAwaiter().GetResult();
+                db.Applcationuser.update(appuser);
+                db.save();
+                usermanager.RemoveFromRoleAsync(appuser, oldrole).GetAwaiter().GetResult();
                 usermanager.AddToRoleAsync(appuser, model.appuser.rolename).GetAwaiter().GetResult();
                 TempData["success"] = "Role Updated";
               
+            }
+            else
+            {
+                if(oldrole==SD.Role_user_Com && appuser.companyId != model.appuser.companyId)
+                {
+                    appuser.companyId = model.appuser.companyId;
+                    db.Applcationuser.update(appuser);
+                    db.save();
+                    TempData["success"] = "Company Updated";
+                }
             }
 
 
@@ -111,13 +125,13 @@ namespace StoreWeb.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult getall()
         {
-            List <Applicationuser> appuser = db.ApplicationUsers.Include(x=>x.Company).ToList();
-            var roles = db.Roles.ToList();
-            var userrole = db.UserRoles.ToList();
+            List <Applicationuser> appuser = db.Applcationuser.GetAll(includeproperties: "Company").ToList();
+            var roles = rolemanager.Roles.ToList();
+          
             foreach(Applicationuser row in appuser)
             {
-                var roleid = userrole.FirstOrDefault(x => x.UserId == row.Id).RoleId;
-                row.rolename = roles.FirstOrDefault(x => x.Id == roleid).Name;
+               
+                row.rolename = usermanager.GetRolesAsync(row).GetAwaiter().GetResult().FirstOrDefault();
              
                 if (row.Company == null)
                 {
@@ -132,7 +146,7 @@ namespace StoreWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult LockUnlock([FromBody]string id)
         {
-            var rec = db.ApplicationUsers.FirstOrDefault(x => x.Id == id);
+            var rec = db.Applcationuser.Get(x => x.Id == id);
             string status = "";
             if (rec == null){
                 return Json(new { success = true, message = "error while lockunlock user no such record" });
@@ -150,8 +164,8 @@ namespace StoreWeb.Areas.Admin.Controllers
                     status = "record was locked for 100 years";
                 }
 
-
-                db.SaveChanges();
+                db.Applcationuser.update(rec);
+                db.save();
 
             }
 

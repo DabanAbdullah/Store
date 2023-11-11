@@ -20,18 +20,19 @@ namespace Store.DataAccess.Repository
 
         public void update(Applicationuser obj)
         {
-            //  _db.Products.Update(obj);
-            var rec = _db.ApplicationUsers.FirstOrDefault(x => x.Id == obj.Id);
-            if (rec != null)
-            {
-                rec.fullname = obj.fullname;
-                rec.Email = obj.Email;
-                rec.StreetAdress = obj.StreetAdress;
-                rec.state = obj.state;
-                rec.PhoneNumber = obj.PhoneNumber;
-                rec.postalcode = obj.postalcode;
+           
+            _db.ApplicationUsers.Update(obj);
+            //var rec = _db.ApplicationUsers.FirstOrDefault(x => x.Id == obj.Id);
+            //if (rec != null)
+            //{
+            //    rec.fullname = obj.fullname;
+            //    rec.Email = obj.Email;
+            //    rec.StreetAdress = obj.StreetAdress;
+            //    rec.state = obj.state;
+            //    rec.PhoneNumber = obj.PhoneNumber;
+            //    rec.postalcode = obj.postalcode;
                
-            }
+            //}
          }
         
     }
