@@ -88,7 +88,7 @@ Each repository handles data retrieval and modification, improving code maintain
 
 ## 📸 Project Screenshot  
 
-![Online Store Screenshot]([https://drive.google.com/drive/u/0/folders/1NWppGlv-WyfN31tD190QN1lmgWY4gOfs](https://drive.google.com/file/d/1LzmvrPzvoJNinDTeC2q0pIm-HIghnxyU/view?usp=sharing))
+![Online Store Screenshot](https://drive.google.com/file/d/1LzmvrPzvoJNinDTeC2q0pIm-HIghnxyU/view)
 
 
 👨‍💻 Daban Salahaddin Abdullah
